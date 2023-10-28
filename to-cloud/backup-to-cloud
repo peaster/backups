@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Archive data to any rclone compatible cloud object storage provider. Based on Jeff Geerling's backup script, thanks Jeff!
+#
+# Basic usage:
+#   Set environment variables for RCLONE_REMOTE, 
+#
+#   $ chmod +x backup-to-cloud.sh
+#   $ ./backup-to-cloud.sh
+#
+# Requires valid credentials - set up with `rclone config`.
+
+# Check if rclone is installed.
+if ! [ -x "$(command -v rclone" ]; then
+  echo 'Error: rclone is not installed.' >&2
+  exit 1
+fi
+
+# Variables.
+rclone_remote=$RCLONE_REMOTE
+rclone_bucket=$RCLONE_BUCKET
+
+# Make sure bucket exists.
+$RCLONE mkdir $rclone_remote:$rclone_bucket
+
+# List of directories to clone. Defaults to the locally copied files
+declare -a dirs=(
+   ../from-local/
+)
+
+# Clone each directory. Add `--progress` for nicer (but more verbose) output.
+for i in "${dirs[@]}"
+do
+  echo "Syncing Directory: $i"
+  despaced="${i// /_}"
+  rclone sync "$i" $rclone_remote:$rclone_bucket"$despaced" --skip-links --progress
+done
+

@@ -1,0 +1,20 @@
+#!/bin/bash
+# used for backing up entire linux systems. In order for this to work,
+# the target machine's SSH daemon must allow root to login using a public key
+# without password authentication. See https://unix.stackexchange.com/questions/92123/rsync-all-files-of-remote-machine-over-ssh-without-root-user/92397#92397 and https://wiki.archlinux.org/title/rsync#Automated_backup_with_SSH
+
+#retrieve CLI flags
+while getopts u:h: flag
+do
+    case "${flag}" in
+        h) host=${OPTARG};;
+    esac
+done
+
+BACKUP_PATH=$(pwd)/full-system-backups/$host
+
+# make backup directory if it doesn't exist
+mkdir -p $BACKUP_PATH
+
+rsync -aAXHv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} -e ssh root@$host:/ $BACKUP_PATH
+
