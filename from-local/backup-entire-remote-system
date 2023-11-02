@@ -11,10 +11,12 @@ do
     esac
 done
 
-BACKUP_PATH=$(pwd)/full-system-backups/$host
+BACKUP_PATH=$(pwd)/system-backups/$host
+LOGS_DIR=./.logs/$host
+LOGFILE=$LOGS_DIR/$host-$( date '+%F_%H:%M:%S' ).log
 
 # make backup directory if it doesn't exist
 mkdir -p $BACKUP_PATH
+mkdir -p $LOGS_DIR 
 
-rsync -aAXHv --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} -e ssh root@$host:/ $BACKUP_PATH
-
+rsync -aAXHv --progress --stats --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/home/peaster/.cache"} -e ssh root@$host:/ $BACKUP_PATH --log-file=$LOGFILE 
