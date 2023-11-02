@@ -3,7 +3,7 @@ This repository contains the backbone of my backup strategy.
 
 I don't own a NAS (although i'm planning on building one soon), so in the meantime, I roughly follow the [3-2-1 backup strategy](https://www.backblaze.com/blog/the-3-2-1-backup-strategy/).
 
-To accomplish this, I run a primary and secondary backup server on Raspberry Pis. With the price of NAND in a freefall, I considered setting them up in software RAID 0, but for simplicity, they are both in a non-RAID configuration.
+To accomplish this, I run a primary and secondary backup server on Raspberry Pis. With the price of NAND in a freefall, I considered setting them up in software RAID 1, but for simplicity, they are both in a non-RAID configuration.
 
 # How it works
 For each device I wish to back up with this method, I add the backup server's public key to the `/root/.ssh/authorized_keys` file on the target machine. 
